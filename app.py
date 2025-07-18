@@ -11,13 +11,18 @@ model = genai.GenerativeModel("gemini-2.0-flash")
 
 # Database connection
 def connect_db():
-    return psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        database=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        port=os.getenv("DB_PORT")
-    )
+    try:
+        conn = psycopg2.connect(
+            host=os.getenv("DB_HOST"),
+            database=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            port=os.getenv("DB_PORT")
+        )
+        return conn
+    except Exception as e:
+        st.error(f"❌ Database connection failed: {e}")
+        raise
 
 def create_table():
     conn = connect_db()
